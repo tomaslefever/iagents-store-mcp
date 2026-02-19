@@ -198,6 +198,8 @@ function createMcpServer() {
     server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { name, arguments: args } = request.params;
 
+        console.log(`[MCP Tool Request] Tool: ${name}`, JSON.stringify(args, null, 2));
+
         try {
             switch (name) {
                 case "list_collections": {
@@ -379,9 +381,12 @@ async function run() {
         const session = sessions.get(sessionId);
 
         if (!session) {
+            console.warn(`[SSE Warning] Session not found: ${sessionId}`);
             res.status(404).send("Sesión no encontrada o expirada");
             return;
         }
+
+        console.log(`[SSE Message] Received ${req.method} for session ${sessionId}`);
 
         try {
             // Pasamos el mensaje al transporte de la sesión correspondiente
